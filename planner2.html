@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safari Decision Tree</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .decision-tree {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .step {
+            margin-bottom: 20px;
+        }
+        .options {
+            margin-left: 20px;
+        }
+        .option {
+            margin: 10px 0;
+        }
+        .option label {
+            display: block;
+            font-weight: bold;
+        }
+        .description {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="decision-tree">
+        <h1>Plan Your Safari Adventure</h1>
+
+        <!-- Step 1: Choose Pricing/Experience -->
+        <div class="step" id="step-1">
+            <h2>Step 1: Choose a Type of Safari</h2>
+            <div class="options">
+                <div class="option">
+                    <label>
+                        <input type="radio" name="safari-type" value="luxury">
+                        Luxury Safari
+                    </label>
+                    <div class="description">Top-tier lodges, exclusive experiences, and premium services.</div>
+                </div>
+                <div class="option">
+                    <label>
+                        <input type="radio" name="safari-type" value="standard">
+                        Standard Safari
+                    </label>
+                    <div class="description">Balanced comfort and adventure for families or groups.</div>
+                </div>
+                <div class="option">
+                    <label>
+                        <input type="radio" name="safari-type" value="budget">
+                        Budget Safari
+                    </label>
+                    <div class="description">Affordable options with essential amenities and memorable experiences.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Choose Parks -->
+        <div class="step" id="step-2" style="display: none;">
+            <h2>Step 2: Choose Parks</h2>
+            <div class="options">
+                <div class="option">
+                    <label>
+                        <input type="checkbox" name="park" value="masai-mara">
+                        Masai Mara National Reserve (Kenya)
+                    </label>
+                    <div class="description">Highlights: The Great Migration, Big Five sightings, and breathtaking savannah landscapes.</div>
+                </div>
+                <div class="option">
+                    <label>
+                        <input type="checkbox" name="park" value="amboseli">
+                        Amboseli National Park (Kenya)
+                    </label>
+                    <div class="description">Highlights: Majestic elephants, views of Mount Kilimanjaro, and birdwatching.</div>
+                </div>
+                <div class="option">
+                    <label>
+                        <input type="checkbox" name="park" value="ol-pejeta">
+                        Ol Pejeta Conservancy (Kenya)
+                    </label>
+                    <div class="description">Highlights: Rhino conservation, chimpanzee sanctuary, and night game drives.</div>
+                </div>
+                <div class="option">
+                    <label>
+                        <input type="checkbox" name="park" value="tsavo">
+                        Tsavo East and West National Parks (Kenya)
+                    </label>
+                    <div class="description">Highlights: Large herds of elephants, stunning landscapes, and Mzima Springs.</div>
+                </div>
+                <div class="option">
+                    <label>
+                        <input type="checkbox" name="park" value="lake-nakuru">
+                        Lake Nakuru National Park (Kenya)
+                    </label>
+                    <div class="description">Highlights: Flamingos, rhinos, and picturesque lake views.</div>
+                </div>
+                <div class="option">
+                    <label>
+                        <input type="checkbox" name="park" value="serengeti">
+                        Serengeti National Park (Tanzania)
+                    </label>
+                    <div class="description">Highlights: Annual migration, diverse ecosystems, and luxurious lodges.</div>
+                </div>
+                <div class="option">
+                    <label>
+                        <input type="checkbox" name="park" value="ngorongoro">
+                        Ngorongoro Conservation Area (Tanzania)
+                    </label>
+                    <div class="description">Highlights: Ngorongoro Crater, rich Maasai culture, and dense wildlife.</div>
+                </div>
+                <div class="option">
+                    <label>
+                        <input type="checkbox" name="park" value="tarangire">
+                        Tarangire National Park (Tanzania)
+                    </label>
+                    <div class="description">Highlights: Baobab trees, large elephant herds, and off-the-beaten-path safaris.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Calculate Costs -->
+        <div class="step" id="step-3" style="display: none;">
+            <h2>Step 3: Confirm Your Safari Details</h2>
+            <p>Selected Parks:</p>
+            <ul id="selected-parks"></ul>
+            <p>
+                <label for="days">Number of Days:</label>
+                <input type="number" id="days" name="days" min="1" value="1">
+            </p>
+            <p id="total-cost">Total Cost: $0</p>
+            <button>Confirm and Proceed</button>
+        </div>
+    </div>
+
+    <script>
+        const step1Options = document.querySelectorAll('input[name="safari-type"]');
+        const step2 = document.getElementById('step-2');
+        const step2Options = document.querySelectorAll('input[name="park"]');
+        const step3 = document.getElementById('step-3');
+        const selectedParksList = document.getElementById('selected-parks');
+        const daysInput = document.getElementById('days');
+        const totalCostElement = document.getElementById('total-cost');
+
+        const baseCharge = 200;
+
+        step1Options.forEach(option => {
+            option.addEventListener('change', () => {
+                step2.style.display = 'block';
+            });
+        });
+
+        step2Options.forEach(option => {
+            option.addEventListener('change', () => {
+                step3.style.display = 'block';
+                updateSelectedParks();
+            });
+        });
+
+        daysInput.addEventListener('input', updateTotalCost);
+
+        function updateSelectedParks() {
+            selectedParksList.innerHTML = '';
+            step2Options.forEach(option => {
+                if (option.checked) {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = option.parentNode.textContent.trim();
+                    selectedParksList.appendChild(listItem);
+                }
+            });
+            updateTotalCost();
+        }
+
+        function updateTotalCost() {
+            const selectedParks = Array.from(step2Options).filter(option => option.checked);
+            const days = parseInt(daysInput.value, 10) || 1;
+            const totalCost = selectedParks.length * baseCharge * days;
+            totalCostElement.textContent = `Total Cost: $${totalCost}`;
+        }
+    </script>
+</body>
+</html>
